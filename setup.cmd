@@ -29,11 +29,12 @@ REM PREPARE STEP 2
 FOR /f "tokens=*" %i IN ('docker-machine ip proxy') DO set FLOW_PROXY_HOST=%i
 set FLOW_CONSUL_ADDRESS=http://%CONSUL_IP%:8500
 FOR /f "tokens=*" %i IN ('docker-machine env proxy') DO %i
-
 set FLOW_PROXY_DOCKER_HOST=%DOCKER_HOST%
 set FLOW_PROXY_DOCKER_CERT_PATH=%DOCKER_CERT_PATH%
-
 
 REM PREPARE STEP 2
 FOR /f "tokens=*" %i IN ('docker-machine env --swarm swarm-master') DO %i
 docker-flow.exe --blue-green --target=app --service-path="/api/v1/books" --side-target=db --flow=deploy --flow=proxy
+
+REM SCALING
+docker-flow.exe --scale="+2" --flow=scale --flow=proxy
