@@ -24,6 +24,7 @@ type Opts struct {
 	CertPath                string   `long:"cert-path" description:"Docker certification path. If not specified, DOCKER_CERT_PATH environment variable will be used instead." yaml:"cert_path" envconfig:"cert_path"`
 	ComposePath             string   `short:"f" long:"compose-path" value-name:"docker-compose.yml" description:"Path to the Docker Compose configuration file." yaml:"compose_path" envconfig:"compose_path"`
 	BlueGreen               bool     `short:"b" long:"blue-green" description:"Perform blue-green deployment." yaml:"blue_green" envconfig:"blue_green"`
+	Color               	string   `short:"C" long:"color" description:"Specify either blue or green directly."`
 	Target                  string   `short:"t" long:"target" description:"Docker Compose target."`
 	SideTargets             []string `short:"T" long:"side-target" description:"Side or auxiliary Docker Compose targets. Multiple values are allowed." yaml:"side_targets"`
 	PullSideTargets         bool     `short:"S" long:"pull-side-targets" description:"Pull side or auxiliary targets." yaml:"pull_side_targets" envconfig:"pull_side_targets"`

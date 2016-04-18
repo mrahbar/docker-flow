@@ -10,13 +10,36 @@ import (
 
 const ConsulScaleKey = "scale"
 const ConsulColorKey = "color"
+const ConsulKvQuery = "%s/v1/kv/docker-flow/%s/%s?raw"
 
 type Consul struct{}
+
+func (c Consul) GetServices(address string) (string, error) {
+	resp, err := http.Get(fmt.Sprintf("%s/v1/catalog/services", address))
+	if err != nil {
+		return "", fmt.Errorf("Please make sure that Consul address is correct\n%v", err)
+	}
+	defer resp.Body.Close()
+	data, _ := ioutil.ReadAll(resp.Body)
+
+	return string(data), nil
+}
+
+func (c Consul) GetNodes(address, serviceName string) (string, error) {
+	resp, err := http.Get(fmt.Sprintf("%s/v1/catalog/service/%s", address, serviceName))
+	if err != nil {
+		return "", fmt.Errorf("Please make sure that Consul address is correct\n%v", err)
+	}
+	defer resp.Body.Close()
+	data, _ := ioutil.ReadAll(resp.Body)
+
+	return string(data), nil
+}
 
 func (c Consul) GetScaleCalc(address, serviceName, scale string) (int, error) {
 	s := 1
 	inc := 0
-	resp, err := http.Get(fmt.Sprintf("%s/v1/kv/docker-flow/%s/scale?raw", address, serviceName))
+	resp, err := http.Get(fmt.Sprintf(ConsulKvQuery, address, serviceName, ConsulScaleKey))
 	if err != nil {
 		return 0, fmt.Errorf("Please make sure that Consul address is correct\n%v", err)
 	}
@@ -41,7 +64,7 @@ func (c Consul) GetScaleCalc(address, serviceName, scale string) (int, error) {
 }
 
 func (c Consul) GetColor(address, serviceName string) (string, error) {
-	resp, err := http.Get(fmt.Sprintf("%s/v1/kv/docker-flow/%s/color?raw", address, serviceName))
+	resp, err := http.Get(fmt.Sprintf(ConsulKvQuery, address, serviceName, ConsulColorKey))
 	if err != nil {
 		return "", fmt.Errorf("Could not retrieve the color from Consul. Please make sure that Consul address is correct\n%v", err)
 	}
