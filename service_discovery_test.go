@@ -35,6 +35,16 @@ func (m *ServiceDiscoveryMock) PutColor(address, serviceName, value string) (str
 	return args.String(0), args.Error(1)
 }
 
+func (m *ServiceDiscoveryMock) GetNodes(address, serviceName string) (string, error) {
+	args := m.Called(address, serviceName)
+	return args.String(0), args.Error(1)
+}
+
+func (m *ServiceDiscoveryMock) GetServices(address string) (string, error) {
+	args := m.Called(address)
+	return args.String(0), args.Error(1)
+}
+
 func getServiceDiscoveryMock(opts Opts, skipMethod string) *ServiceDiscoveryMock {
 	mockObj := new(ServiceDiscoveryMock)
 	scaleCalc := 5
@@ -52,6 +62,12 @@ func getServiceDiscoveryMock(opts Opts, skipMethod string) *ServiceDiscoveryMock
 	}
 	if (skipMethod != "PutColor") {
 		mockObj.On("PutColor", mock.Anything, mock.Anything, mock.Anything).Return("", nil)
+	}
+	if (skipMethod != "GetNodes") {
+		mockObj.On("GetNodes", mock.Anything, mock.Anything).Return("", nil)
+	}
+	if (skipMethod != "GetServices") {
+		mockObj.On("GetServices", mock.Anything).Return("", nil)
 	}
 	return mockObj
 }

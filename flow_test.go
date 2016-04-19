@@ -583,6 +583,21 @@ func (m *FlowMock) Proxy(opts Opts, proxy Proxy) error {
 	return args.Error(0)
 }
 
+func (m *FlowMock) StopApp(opts Opts, dc DockerComposable) error {
+	args := m.Called(opts, dc)
+	return args.Error(0)
+}
+
+func (m *FlowMock) StopColor(opts Opts, dc DockerComposable) error {
+	args := m.Called(opts, dc)
+	return args.Error(0)
+}
+
+func (m *FlowMock) StopOld(opts Opts, dc DockerComposable) error {
+	args := m.Called(opts, dc)
+	return args.Error(0)
+}
+
 func getFlowMock(skipMethod string) *FlowMock {
 	mockObj := new(FlowMock)
 	if skipMethod != "Deploy" {
@@ -596,6 +611,15 @@ func getFlowMock(skipMethod string) *FlowMock {
 	}
 	if skipMethod != "Proxy" {
 		mockObj.On("Proxy", mock.Anything, mock.Anything).Return(nil)
+	}
+	if skipMethod != "StopColor" {
+		mockObj.On("StopColor", mock.Anything, mock.Anything).Return(nil)
+	}
+	if skipMethod != "StopOld" {
+		mockObj.On("StopOld", mock.Anything, mock.Anything).Return(nil)
+	}
+	if skipMethod != "StopApp" {
+		mockObj.On("StopApp", mock.Anything, mock.Anything).Return(nil)
 	}
 	return mockObj
 }
