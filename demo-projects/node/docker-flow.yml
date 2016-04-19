@@ -1,0 +1,4 @@
+target: web
+blue_green: true
+service_path:
+  - /
