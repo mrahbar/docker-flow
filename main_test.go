@@ -173,32 +173,10 @@ func (s MainTestSuite) Test_Main_LogsFatal_WhenScaleAndNotDeployAndScaleFails() 
 
 // main > stop-old
 
-func (s MainTestSuite) Test_Main_InvokesDockerComposeCreateFlowFileWithCurrentColor_WhenStopOldAndDeployed() {
-	mockObj := getDockerComposeMock(s.opts, "")
-	dockerCompose = mockObj
-	GetOpts = func() (Opts, error) {
-		s.opts.Flow = []string{"stop-old"}
-		return s.opts, nil
-	}
-	deployed = true
-
-	main()
-
-	mockObj.AssertCalled(
-		s.T(),
-		"CreateFlowFile",
-		s.opts.ComposePath,
-		s.opts.ServiceName,
-		s.opts.Target,
-		s.opts.SideTargets,
-		s.opts.CurrentColor,
-		s.opts.BlueGreen,
-	)
-}
-
 func (s MainTestSuite) Test_Main_InvokesDockerComposeCreateFlowFileWithNextColor_WhenStopOldAndNotDeployed() {
-	mockObj := getDockerComposeMock(s.opts, "")
-	dockerCompose = mockObj
+	mockObj := getFlowMock("StopOld")
+	flow = mockObj
+	dockerCompose = getDockerComposeMock(s.opts, "StopTargets")
 	GetOpts = func() (Opts, error) {
 		s.opts.Flow = []string{"stop-old"}
 		return s.opts, nil
@@ -208,13 +186,9 @@ func (s MainTestSuite) Test_Main_InvokesDockerComposeCreateFlowFileWithNextColor
 
 	mockObj.AssertCalled(
 		s.T(),
-		"CreateFlowFile",
-		s.opts.ComposePath,
-		s.opts.ServiceName,
-		s.opts.Target,
-		s.opts.SideTargets,
-		s.opts.NextColor,
-		s.opts.BlueGreen,
+		"StopOld",
+		s.opts,
+		dockerCompose,
 	)
 }
 
@@ -245,8 +219,10 @@ func (s MainTestSuite) Test_Main_InvokesLogFatal_WhenStopOldAndDockerComposeCrea
 }
 
 func (s MainTestSuite) Test_Main_InvokesDockerComposeStopTargetWithCurrentTarget_WhenStopOldAndDeployed() {
-	mockObj := getDockerComposeMock(s.opts, "")
-	dockerCompose = mockObj
+	mockObj := getFlowMock("StopOld")
+	flow = mockObj
+	dockerCompose = getDockerComposeMock(s.opts, "StopTargets")
+
 	GetOpts = func() (Opts, error) {
 		s.opts.Flow = []string{"stop-old"}
 		return s.opts, nil
@@ -257,11 +233,9 @@ func (s MainTestSuite) Test_Main_InvokesDockerComposeStopTargetWithCurrentTarget
 
 	mockObj.AssertCalled(
 		s.T(),
-		"StopTargets",
-		s.opts.Host,
-		s.opts.CertPath,
-		s.opts.Project,
-		[]string{s.opts.CurrentTarget},
+		"StopOld",
+		s.opts,
+		dockerCompose,
 	)
 }
 
